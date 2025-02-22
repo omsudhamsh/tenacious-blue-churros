@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import axios from 'axios';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -60,6 +61,26 @@ function SignLinkAboutScreen({ navigation }) {
 // New SignLink Main Screen Component (The core functionality)
 function SignLinkMainScreen() {
   const [inputText, setInputText] = React.useState('');
+  const [translatedText, setTranslatedText] = React.useState('');
+
+  const translateText = async () => {
+    try {
+      // Replace 192.168.1.xxx with your actual local IP
+      const response = await axios.post("http://192.168.1.xxx:5000/translate", {
+        text: inputText,
+        from_lang: "en",
+        to_lang: "fr",
+      });
+      setTranslatedText(response.data.translated_text);
+    } catch (error) {
+      console.error("Translation error:", error);
+      // Add user-friendly error handling
+      Alert.alert(
+        "Translation Error",
+        "Failed to translate text. Please check your connection."
+      );
+    }
+  };
 
   return (
     <View style={styles.signLinkContainer}>
